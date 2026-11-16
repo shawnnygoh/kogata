@@ -1,0 +1,31 @@
+[project]
+name = "kogata"
+version = "0.0.1"
+description = "Components for training and serving tiny text and speech models."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "shawnnygoh" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.15.0",
+]
+
+[project.urls]
+Repository = "https://github.com/shawnnygoh/kogata"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "datasets>=5.2.0",
+    "matplotlib>=3.11.2",
+    "pytest>=9.2.0",
+    "ruff>=0.17.5",
+    "tokenizers>=0.23.3",
+    "tqdm>=4.70.1",
+]
