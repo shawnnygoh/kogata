@@ -5,7 +5,7 @@ from torch import nn
 
 
 class Head(nn.Module):
-    """Single-head self-attention."""
+    """Single-head causal self-attention."""
 
     def __init__(self, dim: int, head_dim: int):
         super().__init__()
@@ -15,12 +15,16 @@ class Head(nn.Module):
         self.v_proj = nn.Linear(dim, head_dim, bias=False)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        T = x.shape[1]
         q = self.q_proj(x)  # (B, T, head_dim)
         k = self.k_proj(x)  # (B, T, head_dim)
         v = self.v_proj(x)  # (B, T, head_dim)
 
         scores = q @ k.transpose(-2, -1)  # (B, T, T)
         scores = scores * self.head_dim**-0.5
+        # True where token i may attend to token j, i.e. j <= i
+        causal_mask = torch.ones(T, T, dtype=torch.bool, device=x.device).tril()
+        scores = scores.masked_fill(~causal_mask, float("-inf"))
         weights = scores.softmax(dim=-1)  # each row sums to 1
         out = weights @ v  # (B, T, head_dim)
 
