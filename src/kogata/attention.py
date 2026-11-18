@@ -31,9 +31,29 @@ class Head(nn.Module):
         return out
 
 
+class MHAWrapper(nn.Module):
+    """Multi-head causal self-attention (MHA) as a list of single heads."""
+
+    def __init__(self, dim: int, n_heads: int, head_dim: int | None = None):
+        super().__init__()
+        self.dim = dim
+        if head_dim is None:
+            if dim % n_heads != 0:
+                raise ValueError(f"dim={dim} is not divisible by n_heads={n_heads}")
+            head_dim = dim // n_heads
+        self.heads = nn.ModuleList(Head(dim, head_dim) for _ in range(n_heads))
+        self.o_proj = nn.Linear(n_heads * head_dim, dim, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # Each head gives (B, T, head_dim); joined: (B, T, n_heads * head_dim)
+        out = torch.cat([head(x) for head in self.heads], dim=-1)
+        return self.o_proj(out)  # (B, T, dim)
+
+
 if __name__ == "__main__":
     torch.manual_seed(0)
     head = Head(dim=32, head_dim=8)
     x = torch.randn(2, 5, 32)
-    out = head(x)
-    print(f"x: {tuple(x.shape)} -> out: {tuple(out.shape)}")
+    print(f"Head:      x: {tuple(x.shape)} -> out: {tuple(head(x).shape)}")
+    attn = MHAWrapper(dim=32, n_heads=4)
+    print(f"Wrapper:   x: {tuple(x.shape)} -> out: {tuple(attn(x).shape)}")
