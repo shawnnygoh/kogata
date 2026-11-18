@@ -1,11 +1,25 @@
-"""Attention mixers."""
+"""Attention mixers.
+
+Shapes use B for batch size and T for sequence length.
+"""
 
 import torch
 from torch import nn
 
 
 class Head(nn.Module):
-    """Single-head causal self-attention."""
+    """Single-head causal self-attention.
+
+    Each position attends to itself and to earlier positions only.
+
+    Args:
+        dim: Width of the input vectors.
+        head_dim: Width of the query, key and value vectors, and of the output.
+
+    Shape:
+        - Input: (B, T, dim)
+        - Output: (B, T, head_dim)
+    """
 
     def __init__(self, dim: int, head_dim: int):
         super().__init__()
@@ -32,7 +46,23 @@ class Head(nn.Module):
 
 
 class MHAWrapper(nn.Module):
-    """Multi-head causal self-attention (MHA) as a list of single heads."""
+    """Multi-head causal self-attention (MHA) as a list of single heads.
+
+    Runs each `Head` separately, joins their outputs and projects them back
+    to `dim` with `o_proj`.
+
+    Args:
+        dim: Width of the input and output vectors.
+        n_heads: Number of heads.
+        head_dim: Width of each head. Defaults to `dim // n_heads`.
+
+    Raises:
+        ValueError: If `head_dim` is not given and `n_heads` does not divide `dim`.
+
+    Shape:
+        - Input: (B, T, dim)
+        - Output: (B, T, dim)
+    """
 
     def __init__(self, dim: int, n_heads: int, head_dim: int | None = None):
         super().__init__()
