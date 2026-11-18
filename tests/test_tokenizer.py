@@ -20,6 +20,13 @@ def test_unknown_character_raises():
         tokenizer.encode("abz")
 
 
+def test_unknown_id_raises():
+    tokenizer = CharTokenizer("abc")
+    for bad_id in (3, -1):
+        with pytest.raises(ValueError, match=rf"ID {bad_id}\b"):
+            tokenizer.decode([0, bad_id])
+
+
 def test_save_and_load(tmp_path):
     tokenizer = CharTokenizer(TEXT)
     path = tmp_path / "vocab.json"

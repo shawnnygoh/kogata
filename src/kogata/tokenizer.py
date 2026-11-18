@@ -37,8 +37,16 @@ class CharTokenizer:
             raise ValueError(f"Character {ch!r} is not in the vocabulary") from None
 
     def decode(self, ids: list[int]) -> str:
-        """Convert a list of token IDs back into a string."""
-        return "".join(self.itos[i] for i in ids)
+        """Convert a list of token IDs back into a string.
+
+        Raises:
+            ValueError: If an ID is not in the vocabulary.
+        """
+        try:
+            return "".join(self.itos[i] for i in ids)
+        except KeyError as e:
+            i = e.args[0]
+            raise ValueError(f"Token ID {i!r} is not in the vocabulary") from None
 
     def save(self, path: str | Path) -> None:
         """Write the vocabulary to a JSON file."""
