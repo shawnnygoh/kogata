@@ -9,6 +9,18 @@ class TextDataset(Dataset):
 
     Window i starts at token i * stride. With stride=1 the windows overlap
     almost entirely; with stride=seq_len they do not overlap at all.
+
+    Args:
+        token_ids: The whole corpus as token IDs.
+        seq_len: Number of tokens in each window.
+        stride: Distance in tokens between the starts of consecutive windows.
+
+    Raises:
+        ValueError: If `seq_len` or `stride` is less than 1.
+
+    Shape:
+        - x: (seq_len,)
+        - y: (seq_len,)
     """
 
     def __init__(self, token_ids: list[int], seq_len: int, stride: int = 1):
