@@ -35,7 +35,7 @@ class TextDataset(Dataset):
 
 
 if __name__ == "__main__":
-    from tokenizer import CharTokenizer
+    from kogata.tokenizer import CharTokenizer
 
     text = "Building a small language model from scratch is awesome!"
     tokenizer = CharTokenizer(text)

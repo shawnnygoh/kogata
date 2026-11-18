@@ -1,6 +1,6 @@
 import pytest
 
-from tokenizer import CharTokenizer
+from kogata.tokenizer import CharTokenizer
 
 TEXT = "hello world, héllo wörld! 你好"
 

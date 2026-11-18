@@ -1,6 +1,6 @@
 import torch
 
-from model import Head
+from kogata.attention import Head
 
 DIM, HEAD_DIM = 32, 8
 

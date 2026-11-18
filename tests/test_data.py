@@ -2,7 +2,7 @@ import pytest
 import torch
 from torch.utils.data import DataLoader
 
-from data_loader import TextDataset
+from kogata.data import TextDataset
 
 TOKENS = list(range(20))
 

@@ -1,4 +1,4 @@
-"""GPT model components."""
+"""Attention mixers."""
 
 import torch
 from torch import nn
